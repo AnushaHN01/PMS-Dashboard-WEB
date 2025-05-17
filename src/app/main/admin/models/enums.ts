@@ -6,3 +6,8 @@ export enum AdminSection {
   Reports = 'Reports',
   Settings = 'Settings',
 }
+
+export enum RoomTypeKPI {
+  Occupancy = 'Occupancy',
+  CheckIn = 'Check-in',
+}

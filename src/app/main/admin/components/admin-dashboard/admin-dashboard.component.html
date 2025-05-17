@@ -22,36 +22,22 @@
       </div>
 
       <div class="widget-controls">
-        <button (click)="AddWidget('Chart')" class="btn">Show Bar Chart</button>
-        <button (click)="AddWidget('Time')" class="btn">
+        <button (click)="addWidget('Chart')" class="btn">Show Bar Chart</button>
+        <button (click)="addWidget('Time')" class="btn">
           Show Time Series
         </button>
       </div>
-
-      <div *ngIf="showChartWidget">
-        <div class="chart-widget">
-          <div class="widget-header">
-            <span class="widget-title">
-              {{ chartType === "bar" ? "Bar Chart" : "Time Series Chart" }}
-            </span>
-            <button
-              *ngIf="isRemoveBtnEnable"
-              class="remove-btn"
-              (click)="removeWidget()"
-            >
-              ✕
-            </button>
-          </div>
-
-          <div>
-            <chart-widget
-              *ngIf="chartData"
-              [chartData]="chartData"
-              [chartType]="chartType"
-              [chartOptions]="chartOptions"
-            ></chart-widget>
-          </div>
-        </div>
+      <div *ngIf="showBarChartWidget">
+        <bar-chart-widget
+          [isRemoveBtnEnable]="isRemoveBtnEnable"
+          (showChartWidget)="removeWidget('Chart')"
+        ></bar-chart-widget>
+      </div>
+      <div *ngIf="showTimeSeriesWidget">
+        <time-series-chart-widget
+          [isRemoveBtnEnable]="isRemoveBtnEnable"
+          (showTimeWidget)="removeWidget('Time')"
+        ></time-series-chart-widget>
       </div>
     </main>
   </div>

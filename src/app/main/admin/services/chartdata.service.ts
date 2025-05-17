@@ -5,7 +5,7 @@ import { addDays, formatISO } from 'date-fns';
   providedIn: 'root',
 })
 export class ChartDataService {
-  getBarChartData(): any {
+  getOccupancyChartData(): any {
     return {
       labels: ['Deluxe', 'Standard', 'Suite', 'Family', 'Economy'],
       datasets: [
@@ -13,6 +13,27 @@ export class ChartDataService {
           label: 'Occupancy Count',
           backgroundColor: '#42A5F5',
           data: [120, 95, 60, 30, 25],
+        },
+      ],
+    };
+  }
+
+  getCheckInChartData(): any {
+    return {
+      labels: [
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+      ],
+      datasets: [
+        {
+          label: 'Check-in Count by Weekday',
+          backgroundColor: '#42A5F5',
+          data: [45, 60, 70, 80, 95, 110, 85],
         },
       ],
     };

@@ -1,0 +1,23 @@
+<div class="chart-widget">
+  <div class="widget-header">
+    <span class="widget-title">
+      {{ chartType === "bar" ? "Bar Chart" : "Time Series Chart" }}
+    </span>
+    <button
+      *ngIf="isRemoveBtnEnable"
+      class="remove-btn"
+      (click)="removeWidget()"
+    >
+      ✕
+    </button>
+  </div>
+
+  <div>
+    <chart-widget
+      *ngIf="chartData"
+      [chartData]="chartData"
+      [chartType]="chartType"
+      [chartOptions]="chartOptions"
+    ></chart-widget>
+  </div>
+</div>
