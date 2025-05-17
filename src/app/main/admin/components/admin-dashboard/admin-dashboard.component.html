@@ -33,7 +33,7 @@
           (showChartWidget)="removeWidget('Chart')"
         ></bar-chart-widget>
       </div>
-      <div *ngIf="showTimeSeriesWidget">
+      <div *ngIf="showTimeSeriesWidget" class="padding-top-20px">
         <time-series-chart-widget
           [isRemoveBtnEnable]="isRemoveBtnEnable"
           (showTimeWidget)="removeWidget('Time')"

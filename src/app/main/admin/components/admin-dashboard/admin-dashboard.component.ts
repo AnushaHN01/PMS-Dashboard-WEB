@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 
 import { DashboardService } from '../../services/dashboard.service';
-import { DashboardMetric } from '../../models/dashboard.service';
+import { DashboardModel } from '../../models/dashboard';
 import { AdminSection } from '../../models/enums';
 import { BarChartWidgetComponent } from '../bar-chart-widget/bar-chart-widget.component';
 import { TimeSeriesChartWidgetComponent } from '../time-series-chart-widget/time-series-chart-widget.component';
@@ -21,7 +21,7 @@ import { TimeSeriesChartWidgetComponent } from '../time-series-chart-widget/time
 })
 export class AdminDashboardComponent implements OnInit {
   adminSections = Object.values(AdminSection);
-  metrics: DashboardMetric[] = [];
+  metrics: DashboardModel[] = [];
   showBarChartWidget = false;
   showTimeSeriesWidget = false;
   isRemoveBtnEnable = false;
@@ -41,9 +41,7 @@ export class AdminDashboardComponent implements OnInit {
   addWidget(type: string): void {
     if (type == 'Chart') {
       this.showBarChartWidget = true;
-      this.showTimeSeriesWidget = false;
     } else if (type == 'Time') {
-      this.showBarChartWidget = false;
       this.showTimeSeriesWidget = true;
     }
   }

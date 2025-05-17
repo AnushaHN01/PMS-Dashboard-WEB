@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { DashboardMetric } from '../models/dashboard.service';
+import { DashboardModel } from '../models/dashboard';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DashboardService {
-  getMetrics(): Observable<DashboardMetric[]> {
+  getMetrics(): Observable<DashboardModel[]> {
     return of([
       { title: 'Total Bookings', value: '1,245' },
       { title: 'Available Rooms', value: 23 },
