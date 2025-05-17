@@ -78,7 +78,7 @@ src/
 └── app.config.ts
 ```
 
---
+---
 
 ## 📦 Tech Stack
 
@@ -88,6 +88,8 @@ src/
 - **ngx-toastr** for notifications
 - **ngx-logger** for logging
 - **RxJS** for reactive programming
+
+---
 
 ## Building
 
@@ -99,6 +101,8 @@ ng build
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
+---
+
 ## Running unit tests
 
 To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
@@ -109,6 +113,8 @@ ng test
 
 ![Unit Test Cases](screenshots/6.PMS-TestCases.PNG)
 ![Coverage Report](screenshots/7.UTCCoverage.PNG)
+
+---
 
 ## UI/UX
 
