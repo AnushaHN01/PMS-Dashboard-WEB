@@ -9,7 +9,6 @@ import { ChartType } from '../../models/enums';
   standalone: true,
   imports: [CommonModule, ChartModule],
   templateUrl: './chart-widget.component.html',
-  styleUrls: ['./chart-widget.component.scss'],
 })
 export class ChartWidgetComponent {
   @Input() chartData: any;

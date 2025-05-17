@@ -4,7 +4,6 @@ import { NgFor, NgIf } from '@angular/common';
 import { DashboardService } from '../../services/dashboard.service';
 import { DashboardMetric } from '../../models/dashboard.service';
 import { AdminSection } from '../../models/enums';
-import { LocalStorageService } from '../../../shared/services/localstorage.service';
 import { BarChartWidgetComponent } from '../bar-chart-widget/bar-chart-widget.component';
 import { TimeSeriesChartWidgetComponent } from '../time-series-chart-widget/time-series-chart-widget.component';
 
@@ -27,11 +26,8 @@ export class AdminDashboardComponent implements OnInit {
   showTimeSeriesWidget = false;
   isRemoveBtnEnable = false;
 
-  constructor(
-    private dashboardService: DashboardService,
-    private localStorage: LocalStorageService
-  ) {
-    if (this.localStorage.getItem('isAdmin')) {
+  constructor(private dashboardService: DashboardService) {
+    if (localStorage.getItem('isAdmin')) {
       this.isRemoveBtnEnable = true;
     }
   }

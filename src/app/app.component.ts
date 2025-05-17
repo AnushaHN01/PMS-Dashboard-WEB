@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+
 import { AdminDashboardComponent } from './main/admin/components/admin-dashboard/admin-dashboard.component';
-import { LocalStorageService } from './main/shared/services/localstorage.service';
+import { LoggerService } from './main/core/services/logger.service';
 
 @Component({
   selector: 'app-root',
@@ -10,12 +10,19 @@ import { LocalStorageService } from './main/shared/services/localstorage.service
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit, OnDestroy {
-  constructor(private localStorage: LocalStorageService) {}
+  Admin = 'Admin';
+
+  constructor(private readonly loggerService: LoggerService) {}
   ngOnInit(): void {
-    this.localStorage.setItem('isAdmin', true);
+    localStorage.setItem('auth_token', 'utkhsjh9080g');
+    localStorage.setItem('isAdmin', 'true');
+    this.loggerService.info(
+      `User ${this.Admin} has logged in to MySite360 user interface`
+    );
   }
 
   ngOnDestroy(): void {
-    this.localStorage.removeItem('isAdmin');
+    localStorage.removeItem('isAdmin');
+    this.loggerService.info('Local storage variable isAdmin has been removed!');
   }
 }
