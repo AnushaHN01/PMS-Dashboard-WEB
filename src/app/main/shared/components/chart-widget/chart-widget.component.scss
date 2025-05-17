@@ -1,0 +1,14 @@
+.widget-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  overflow: hidden;
+
+  p-chart {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+  }
+}
