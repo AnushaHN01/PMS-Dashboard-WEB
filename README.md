@@ -38,19 +38,14 @@ This is a modular admin dashboard built using **Angular 19** with **standalone c
 
 ## 📁 Folder Structure
 
+```
 src/
 └── app/
-
 ├── main/
-
 │ ├── admin/
-
 │ │ ├── components/
-
 │ │ │ ├── admin-dashboard/
-
 │ │ │ ├── bar-chart-widget/
-
 │ │ │ └── time-series-chart-widget/
 │ │ ├── models/
 │ │ │ ├── dashboard.ts
@@ -58,7 +53,6 @@ src/
 │ │ └── services/
 │ │ ├── chartdata.service.ts
 │ │ └── dashboard.service.ts
-
 │ ├── core/
 │ │ ├── interceptors/
 │ │ │ ├── auth.interceptor.ts
@@ -82,6 +76,7 @@ src/
 ├── app.component.html
 ├── app.routes.ts
 └── app.config.ts
+```
 
 --
 
