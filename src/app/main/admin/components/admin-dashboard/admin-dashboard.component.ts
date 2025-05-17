@@ -9,6 +9,11 @@ import { DashboardMetric } from '../../models/dashboard.service';
 import { Booking } from '../../models/booking.model';
 import { AdminSection } from '../../models/enums';
 import { ChartDataService } from '../../services/chartdata.service';
+import { LocalStorageService } from '../../../shared/services/localstorage.service';
+import {
+  ToastrMessageType,
+  ToastrMessageWrapperService,
+} from '../../../shared/services/toastr-message-wrapper.service';
 
 @Component({
   selector: 'admin-dashboard',
@@ -24,6 +29,7 @@ export class AdminDashboardComponent implements OnInit {
   bookingDetails: Booking[] = [];
   chartData: any;
   chartType: ChartType = ChartType.Bar;
+  isRemoveBtnEnable = false;
 
   get chartOptions(): any {
     return {
@@ -47,8 +53,14 @@ export class AdminDashboardComponent implements OnInit {
 
   constructor(
     private chartDataService: ChartDataService,
-    private dashboardService: DashboardService
-  ) {}
+    private dashboardService: DashboardService,
+    private localStorage: LocalStorageService,
+    private readonly toastr: ToastrMessageWrapperService
+  ) {
+    if (this.localStorage.getItem('isAdmin')) {
+      this.isRemoveBtnEnable = true;
+    }
+  }
 
   ngOnInit(): void {
     this.dashboardService.getMetrics().subscribe((data) => {
@@ -70,13 +82,25 @@ export class AdminDashboardComponent implements OnInit {
   removeWidget(): void {
     this.showChartWidget = false;
     this.chartData = null;
+    this.toastr.displayMessage(
+      'Widget Removed successfully!',
+      ToastrMessageType.SUCCESS
+    );
   }
 
   private loadBarChart(): void {
     this.chartData = this.chartDataService.getBarChartData();
+    this.toastr.displayMessage(
+      'Bar chart loaded successfully!',
+      ToastrMessageType.SUCCESS
+    );
   }
 
   private loadTimeSeries(): void {
     this.chartData = this.chartDataService.getTimeSeriesChartData();
+    this.toastr.displayMessage(
+      'Time series loaded successfully!',
+      ToastrMessageType.SUCCESS
+    );
   }
 }

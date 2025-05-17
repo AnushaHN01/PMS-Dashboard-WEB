@@ -28,16 +28,22 @@
         </button>
       </div>
 
-      <div class="widgets-area" *ngIf="showChartWidget">
+      <div *ngIf="showChartWidget">
         <div class="chart-widget">
           <div class="widget-header">
             <span class="widget-title">
               {{ chartType === "bar" ? "Bar Chart" : "Time Series Chart" }}
             </span>
-            <button class="remove-btn" (click)="removeWidget()">✕</button>
+            <button
+              *ngIf="isRemoveBtnEnable"
+              class="remove-btn"
+              (click)="removeWidget()"
+            >
+              ✕
+            </button>
           </div>
 
-          <div class="widget-body">
+          <div>
             <chart-widget
               *ngIf="chartData"
               [chartData]="chartData"
