@@ -40,11 +40,17 @@ This is a modular admin dashboard built using **Angular 19** with **standalone c
 
 src/
 └── app/
+
 ├── main/
+
 │ ├── admin/
+
 │ │ ├── components/
+
 │ │ │ ├── admin-dashboard/
+
 │ │ │ ├── bar-chart-widget/
+
 │ │ │ └── time-series-chart-widget/
 │ │ ├── models/
 │ │ │ ├── dashboard.ts
@@ -52,6 +58,7 @@ src/
 │ │ └── services/
 │ │ ├── chartdata.service.ts
 │ │ └── dashboard.service.ts
+
 │ ├── core/
 │ │ ├── interceptors/
 │ │ │ ├── auth.interceptor.ts
@@ -107,14 +114,6 @@ ng test
 
 ![Unit Test Cases](screenshots/6.PMS-TestCases.PNG)
 ![Coverage Report](screenshots/7.UTCCoverage.PNG)
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
 
 ## UI/UX
 
