@@ -134,7 +134,7 @@ src/
 ![Dashboard Layout](screenshots/1.Dashboard.PNG)
 ![Top 5 Room Types by Occupancy/Check-in Count by Weekday](screenshots/2.Occupancy-CheckInChart.png)
 ![Daily Check-in over the past 14days](screenshots/3.TimeSerieChart.PNG)
-![Dashboard Layout With All Widgets](screenshots/4.DashboardLayoutWidget.png)
+![Dashboard Layout With All Widgets](screenshots/4.DashboardLayoutWidgets.PNG)
 ![Removed Widget](screenshots/5.RemovedWidget.png)
 ![Dashboard Layout Save](screenshots/6.DashboardLayoutSave.png)
 
