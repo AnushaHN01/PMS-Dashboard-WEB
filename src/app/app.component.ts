@@ -1,18 +1,20 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { AdminDashboardComponent } from './main/admin/components/admin-dashboard/admin-dashboard.component';
 import { LoggerService } from './main/core/services/logger.service';
+import { RouterModule } from '@angular/router';
+import { LayoutComponent } from './main/layout/layout/layout.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [AdminDashboardComponent],
+  imports: [RouterModule, LayoutComponent],
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit, OnDestroy {
   Admin = 'Admin';
 
   constructor(private readonly loggerService: LoggerService) {}
+
   ngOnInit(): void {
     localStorage.setItem('auth_token', 'utkhsjh9080g');
     localStorage.setItem('isAdmin', 'true');

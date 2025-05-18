@@ -13,13 +13,17 @@ import {
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { provideToastr, ToastrModule } from 'ngx-toastr';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { provideRouter, Routes } from '@angular/router';
 
 Chart.register(...registerables);
+
+const routes: Routes = [];
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideAnimations(),
     provideToastr(),
+    provideRouter(routes),
     importProvidersFrom(ToastrModule.forRoot()),
     provideHttpClient(withInterceptorsFromDi()),
 

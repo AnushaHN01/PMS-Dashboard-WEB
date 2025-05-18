@@ -1,41 +1,43 @@
-import { Component, OnInit } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NgIf } from '@angular/common';
 
-import { DashboardService } from '../../services/dashboard.service';
-import { DashboardModel } from '../../models/dashboard';
-import { AdminSection } from '../../models/enums';
 import { BarChartWidgetComponent } from '../bar-chart-widget/bar-chart-widget.component';
 import { TimeSeriesChartWidgetComponent } from '../time-series-chart-widget/time-series-chart-widget.component';
+import {
+  ToastrMessageType,
+  ToastrMessageWrapperService,
+} from '../../../shared/services/toastr-message-wrapper.service';
+import { LoggerService } from '../../../core/services/logger.service';
 
 @Component({
   selector: 'admin-dashboard',
   standalone: true,
-  imports: [
-    NgIf,
-    NgFor,
-    BarChartWidgetComponent,
-    TimeSeriesChartWidgetComponent,
-  ],
+  imports: [NgIf, BarChartWidgetComponent, TimeSeriesChartWidgetComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss'],
 })
-export class AdminDashboardComponent implements OnInit {
-  adminSections = Object.values(AdminSection);
-  metrics: DashboardModel[] = [];
+export class AdminDashboardComponent implements OnInit, OnDestroy {
   showBarChartWidget = false;
   showTimeSeriesWidget = false;
   isRemoveBtnEnable = false;
+  configuration: any;
 
-  constructor(private dashboardService: DashboardService) {
+  constructor(
+    private readonly toastr: ToastrMessageWrapperService,
+    private readonly loggerService: LoggerService
+  ) {
     if (localStorage.getItem('isAdmin')) {
       this.isRemoveBtnEnable = true;
     }
   }
 
   ngOnInit(): void {
-    this.dashboardService.getMetrics().subscribe((data) => {
-      this.metrics = data;
-    });
+    const saved = localStorage.getItem('widgetVisibility');
+    if (saved) {
+      const widgetVisibility = JSON.parse(saved);
+      this.showBarChartWidget = widgetVisibility.showBarChartWidget;
+      this.showTimeSeriesWidget = widgetVisibility.showTimeSeriesWidget;
+    }
   }
 
   addWidget(type: string): void {
@@ -52,5 +54,24 @@ export class AdminDashboardComponent implements OnInit {
     } else if (type == 'Time') {
       this.showTimeSeriesWidget = false;
     }
+  }
+
+  saveLayout(): void {
+    const widgetVisibility = {
+      showBarChartWidget: this.showBarChartWidget,
+      showTimeSeriesWidget: this.showTimeSeriesWidget,
+    };
+    localStorage.setItem('widgetVisibility', JSON.stringify(widgetVisibility));
+    this.toastr.displayMessage(
+      'Layout saved successfully!',
+      ToastrMessageType.SUCCESS
+    );
+  }
+
+  ngOnDestroy(): void {
+    localStorage.removeItem('widgetVisibility');
+    this.loggerService.info(
+      'Local storage variable widgetVisibility has been removed!'
+    );
   }
 }
