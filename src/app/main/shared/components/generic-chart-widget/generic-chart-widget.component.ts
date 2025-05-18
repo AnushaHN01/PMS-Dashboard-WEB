@@ -1,14 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
-
-import { ChartWidgetComponent } from '../chart-widget.component';
+import { ChartWidgetComponent } from '../chart-widget/chart-widget.component';
+import { ChartType } from '../../models/enums';
 import {
   ToastrMessageType,
   ToastrMessageWrapperService,
-} from '../../../services/toastr-message-wrapper.service';
-import { ChartType } from '../../../models/enums';
-import { LocalStorageKey } from '../../../../core/models/enums';
+} from '../../services/toastr-message-wrapper.service';
+import { LocalStorageKey } from '../../../core/models/enums';
 
 @Component({
   selector: 'generic-chart-widget',

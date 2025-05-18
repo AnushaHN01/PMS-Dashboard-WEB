@@ -3,7 +3,6 @@ import { NgIf } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
 
 import { ChartType } from '../../../shared/models/enums';
-import { GenericChartWidgetComponent } from '../../../shared/components/chart-widget/generic-chart-widget/generic-chart-widget.component';
 import {
   ToastrMessageType,
   ToastrMessageWrapperService,
@@ -11,6 +10,7 @@ import {
 import { WidgetType, WidgetTypeEnum } from '../../models/enums';
 import { LocalStorageKey } from '../../../core/models/enums';
 import { ChartDataService } from '../../services/chartdata.service';
+import { GenericChartWidgetComponent } from '../../../shared/components/generic-chart-widget/generic-chart-widget.component';
 
 @Component({
   selector: 'admin-dashboard',

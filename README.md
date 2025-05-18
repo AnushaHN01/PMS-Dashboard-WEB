@@ -1,6 +1,12 @@
 # ClientApp
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.12.
+This project was created using 
+
+✅ Angular CLI version: 19.2.12 [Angular CLI](https://github.com/angular/angular-cli)
+
+✅ Node.js version: v20.11.1
+
+✅ npm version: 10.2.4
 
 ## Development server
 
@@ -10,7 +16,7 @@ To start a local development server, run:
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will be launched.
 
 
 ## Additional Resources
@@ -31,54 +37,8 @@ This is a modular admin dashboard built using **Angular 19** with **standalone c
 - 🌐 Global Toastr notification wrapper
 - 📦 NGX-Logger-based logging service
 - 🧪 Jasmine/Karma-based unit testing setup
-- 🌀 Core loading spinner service and interceptors
+- 🌀 Core loading interceptors
 - 📁 Standalone components architecture (Angular 17+)
-
----
-
-## 📁 Folder Structure
-
-```
-src/
-└── app/
-    ├── main/
-    │   ├── admin/
-    │   │   ├── components/
-    │   │   │   ├── admin-dashboard/             # Admin dashboard component
-    │   │   │   ├── bar-chart-widget/            # Bar chart widget component
-    │   │   │   └── time-series-chart-widget/    # Time series chart widget component
-    │   │   ├── models/                          
-    │   │   │   ├── dashboard.ts                 # Interfaces and types related to dashboard
-    │   │   │   └── enums.ts                     # Enum definitions for admin section
-    │   │   └── services/
-    │   │       ├── chartdata.service.ts         # Service for fetching chart data
-    │   │       └── dashboard.service.ts         # Business logic for dashboard
-    │   └── core/
-    │       ├── interceptors/
-    │       │   ├── auth.interceptor.ts          # Auth token interceptor
-    │       │   └── auth.interceptor.spec.ts     # Unit tests for auth interceptor
-    │       └── services/
-    │           ├── logger.service.ts            # Logging service
-    │           └── logger.service.spec.ts       # Unit tests for logger service
-    ├── layout/                                  # Layout components like header/side panel/footer
-    └── shared/
-        ├── components/
-        │   └── chart-widget/                    # Shared chart widget component
-        │       ├── chart-widget.component.html
-        │       └── chart-widget.component.ts
-        ├── models/
-        │   └── enums.ts                         # Shared enums used across app
-        ├── pipes/                               # (Expected) shared pipes
-        └── services/
-            ├── toastr-message-wrapper.service.ts     # Toastr notification service
-            └── toastr-message-wrapper.service.spec.ts
-├── app.component.ts
-├── app.component.html
-├── app.component.spec.ts
-├── app.config.ts                                # Application-wide config
-└── index.html                                   # App entry point
-
-```
 
 ---
 
@@ -111,6 +71,8 @@ To execute unit tests with the [Karma](https://karma-runner.github.io) test runn
 
 ```bash
 ng test
+
+ng test --code-coverage
 ```
 
 ![Unit Test Cases](screenshots/7.PMS-TestCases.PNG)
@@ -118,14 +80,63 @@ ng test
 
 ---
 
+## 📁 Folder Structure
+
+```
+src/
+└── app/
+    ├── main/
+    │   └── admin/
+    │       ├── components/
+    │       │   └── admin-dashboard/
+    │       │       ├── admin-dashboard.component.html
+    │       │       ├── admin-dashboard.component.scss
+    │       │       ├── admin-dashboard.component.spec.ts
+    │       │       └── admin-dashboard.component.ts
+    │       ├── models/
+    │       └── services/
+    │
+    ├── core/
+    │   ├── interceptors/
+    │   │   ├── auth.interceptor.spec.ts
+    │   │   └── auth.interceptor.ts
+    │   ├── models/
+    │   └── services/
+    │       ├── logger.service.spec.ts
+    │       └── logger.service.ts
+    │
+    ├── layout/
+    │   └── layout/
+    │       ├── layout.component.html
+    │       ├── layout.component.scss
+    │       ├── layout.component.spec.ts
+    │       └── layout.component.ts
+    │
+    ├── shared/
+    │   ├── components/
+    │   │   ├── chart-widget/
+    │   │   └── generic-chart-widget/
+    │   ├── models/
+    │   ├── pipes/
+    │   └── services/
+    │       ├── toastr-message-wrapper.service.spec.ts
+    │       └── toastr-message-wrapper.service.ts
+    │
+    ├── app.component.html
+    ├── app.component.spec.ts
+    ├── app.component.ts
+    └── app.config.ts
+
+```
+
 ## UI/UX
 
 ![Dashboard Layout](screenshots/1.Dashboard.PNG)
-![Top 5 Room Types by Occupancy](screenshots/2.OccupancyChartWidget.png)
-![Check-in Count by Weekday](screenshots/3.CheckInChart.png)
-![Daily Check-in over the past 14days](screenshots/4.TimeSerieChart.png)
-![Removed Widget](screenshots/5.RemovedWidget.png)
-![Dashboard Layout Save](screenshots/6.DashboardLayoutSave.png)
+![Top 5 Room Types by Occupancy/Check-in Count by Weekday](screenshots/2.Occupancy-CheckInChart.png.png)
+![Daily Check-in over the past 14days](screenshots/3.TimeSerieChart.PNG.png)
+![Dashboard Layout With All Widgets](screenshots/4.DashboardLayoutWidget.png.png)
+![Removed Widget](screenshots/5.RemovedWidget.png.png)
+![Dashboard Layout Save](screenshots/6.DashboardLayoutSave.png.png)
 
 
 ```

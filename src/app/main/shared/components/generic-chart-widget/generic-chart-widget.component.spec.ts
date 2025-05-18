@@ -1,11 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { GenericChartWidgetComponent } from './generic-chart-widget.component';
 import {
-  ToastrMessageWrapperService,
   ToastrMessageType,
-} from '../../../services/toastr-message-wrapper.service';
-import { ChartType } from '../../../models/enums';
-import { LocalStorageKey } from '../../../../core/models/enums';
+  ToastrMessageWrapperService,
+} from '../../services/toastr-message-wrapper.service';
+import { ChartType } from '../../models/enums';
+import { LocalStorageKey } from '../../../core/models/enums';
 
 // Mock Toastr service
 class MockToastrService {
