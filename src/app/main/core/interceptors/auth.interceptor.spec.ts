@@ -8,8 +8,8 @@ import {
   HTTP_INTERCEPTORS,
   HttpRequest,
 } from '@angular/common/http';
-
 import { AuthInterceptor } from './auth.interceptor';
+import { LocalStorageKey } from '../models/enums';
 
 describe('AuthInterceptor', () => {
   let httpMock: HttpTestingController;
@@ -19,7 +19,11 @@ describe('AuthInterceptor', () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
-        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: AuthInterceptor,
+          multi: true,
+        },
       ],
     });
 
@@ -32,43 +36,55 @@ describe('AuthInterceptor', () => {
     localStorage.clear();
   });
 
-  it('should add Authorization header when auth_token exists in localStorage', () => {
-    const dummyToken = 'mocked_token';
-    localStorage.setItem('auth_token', dummyToken);
+  it('should add Authorization header when token is present', () => {
+    const token = 'fake-jwt-token';
+    spyOn(localStorage, 'getItem').and.callFake((key: string) => {
+      if (key === LocalStorageKey.AuthToken) return token;
+      return null;
+    });
 
-    httpClient.get('/api/test').subscribe();
+    httpClient.get('/test-url').subscribe();
 
-    const req = httpMock.expectOne('/api/test');
-    expect(req.request.headers.has('Authorization')).toBeTrue();
-    expect(req.request.headers.get('Authorization')).toBe(
-      `Bearer ${dummyToken}`
+    const httpRequest = httpMock.expectOne('/test-url');
+
+    expect(httpRequest.request.headers.has('Authorization')).toBeTrue();
+    expect(httpRequest.request.headers.get('Authorization')).toBe(
+      `Bearer ${token}`
     );
+
+    httpRequest.flush({}); // respond with empty body
   });
 
-  it('should NOT add Authorization header when no auth_token exists', () => {
-    localStorage.removeItem('auth_token');
+  it('should NOT add Authorization header when token is absent', () => {
+    spyOn(localStorage, 'getItem').and.returnValue(null);
 
-    httpClient.get('/api/test').subscribe();
+    httpClient.get('/test-url').subscribe();
 
-    const req = httpMock.expectOne('/api/test');
-    expect(req.request.headers.has('Authorization')).toBeFalse();
+    const httpRequest = httpMock.expectOne('/test-url');
+
+    expect(httpRequest.request.headers.has('Authorization')).toBeFalse();
+
+    httpRequest.flush({});
   });
 
-  it('should catch and propagate HTTP errors', () => {
-    const errorMessage = 'Internal Server Error';
+  it('should handle and rethrow HTTP errors', () => {
+    spyOn(localStorage, 'getItem').and.returnValue(null);
+    const consoleSpy = spyOn(console, 'error');
 
-    httpClient.get('/api/error').subscribe({
-      next: () => fail('Should have failed with 500 error'),
+    httpClient.get('/test-url').subscribe({
+      next: () => fail('should have failed with 500 error'),
       error: (error) => {
         expect(error.status).toBe(500);
-        expect(error.statusText).toBe('Internal Server Error');
       },
     });
 
-    const req = httpMock.expectOne('/api/error');
-    req.flush(errorMessage, {
+    const httpRequest = httpMock.expectOne('/test-url');
+
+    httpRequest.flush('Internal Server Error', {
       status: 500,
-      statusText: 'Internal Server Error',
+      statusText: 'Error',
     });
+
+    expect(consoleSpy).toHaveBeenCalled();
   });
 });

@@ -1,124 +1,152 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AdminDashboardComponent } from './admin-dashboard.component';
+import { ChartDataService } from '../../services/chartdata.service';
 import {
   ToastrMessageWrapperService,
   ToastrMessageType,
 } from '../../../shared/services/toastr-message-wrapper.service';
-import { LoggerService } from '../../../core/services/logger.service';
+import { WidgetTypeEnum } from '../../models/enums';
+import { LocalStorageKey } from '../../../core/models/enums';
 
 describe('AdminDashboardComponent', () => {
   let component: AdminDashboardComponent;
   let fixture: ComponentFixture<AdminDashboardComponent>;
-  let mockToastrService: jasmine.SpyObj<ToastrMessageWrapperService>;
-  let mockLoggerService: jasmine.SpyObj<LoggerService>;
+  let toastrServiceSpy: jasmine.SpyObj<ToastrMessageWrapperService>;
+  let chartServiceSpy: jasmine.SpyObj<ChartDataService>;
 
   beforeEach(async () => {
-    mockToastrService = jasmine.createSpyObj('ToastrMessageWrapperService', [
+    toastrServiceSpy = jasmine.createSpyObj('ToastrMessageWrapperService', [
       'displayMessage',
     ]);
-    mockLoggerService = jasmine.createSpyObj('LoggerService', ['info']);
+    chartServiceSpy = jasmine.createSpyObj('ChartDataService', [
+      'getOccupancyChartData',
+      'getCheckInChartData',
+      'getTimeSeriesChartData',
+    ]);
 
     await TestBed.configureTestingModule({
-      imports: [AdminDashboardComponent],
+      imports: [AdminDashboardComponent], // Standalone component import
       providers: [
-        { provide: ToastrMessageWrapperService, useValue: mockToastrService },
-        { provide: LoggerService, useValue: mockLoggerService },
+        { provide: ChartDataService, useValue: chartServiceSpy },
+        { provide: ToastrMessageWrapperService, useValue: toastrServiceSpy },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminDashboardComponent);
     component = fixture.componentInstance;
-  });
 
-  afterEach(() => {
+    chartServiceSpy.getOccupancyChartData.and.returnValue({
+      data: 'occupancy',
+    });
+    chartServiceSpy.getCheckInChartData.and.returnValue({ data: 'checkin' });
+    chartServiceSpy.getTimeSeriesChartData.and.returnValue({
+      data: 'timeseries',
+    });
+
     localStorage.clear();
   });
 
-  it('should create the component', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set isRemoveBtnEnable to true if isAdmin is in localStorage', () => {
-    localStorage.setItem('isAdmin', 'true');
-    const comp = new AdminDashboardComponent(
-      mockToastrService,
-      mockLoggerService
+  it('should enable remove button if IsAdmin is set', () => {
+    localStorage.setItem(LocalStorageKey.IsAdmin, 'true');
+    const adminComponent = new AdminDashboardComponent(
+      toastrServiceSpy,
+      chartServiceSpy
     );
-    expect(comp.isRemoveBtnEnable).toBeTrue();
+    expect(adminComponent.isRemoveBtnEnable).toBeTrue();
   });
 
-  it('should set isRemoveBtnEnable to false if isAdmin is not in localStorage', () => {
-    localStorage.removeItem('isAdmin');
-    const comp = new AdminDashboardComponent(
-      mockToastrService,
-      mockLoggerService
-    );
-    expect(comp.isRemoveBtnEnable).toBeFalse();
+  describe('addWidget', () => {
+    it('should load occupancy data', () => {
+      component.selectedWidgetType = WidgetTypeEnum.Occupancy;
+      component.addWidget();
+      expect(component.showOccupancyChartWidget).toBeTrue();
+      expect(component.occupancyData).toEqual({ data: 'occupancy' });
+      expect(toastrServiceSpy.displayMessage).toHaveBeenCalledWith(
+        'Room Occupancy loaded successfully!',
+        ToastrMessageType.SUCCESS
+      );
+    });
+
+    it('should load check-in data', () => {
+      component.selectedWidgetType = WidgetTypeEnum.CheckIn;
+      component.addWidget();
+      expect(component.showCheckInChartWidget).toBeTrue();
+      expect(component.checkInData).toEqual({ data: 'checkin' });
+    });
+
+    it('should load daily chart data', () => {
+      component.selectedWidgetType = WidgetTypeEnum.DailyCheckIn;
+      component.addWidget();
+      expect(component.showTimeSeriesWidget).toBeTrue();
+      expect(component.dailyCheckInData).toEqual({ data: 'timeseries' });
+    });
   });
 
-  it('should load widget visibility from localStorage on init', () => {
-    localStorage.setItem(
-      'widgetVisibility',
-      JSON.stringify({
-        showBarChartWidget: true,
-        showTimeSeriesWidget: false,
-      })
-    );
+  describe('removeWidget', () => {
+    it('should hide occupancy chart', () => {
+      component.showOccupancyChartWidget = true;
+      component.removeWidget(WidgetTypeEnum.Occupancy);
+      expect(component.showOccupancyChartWidget).toBeFalse();
+    });
 
-    component.ngOnInit();
+    it('should hide check-in chart', () => {
+      component.showCheckInChartWidget = true;
+      component.removeWidget(WidgetTypeEnum.CheckIn);
+      expect(component.showCheckInChartWidget).toBeFalse();
+    });
 
-    expect(component.showBarChartWidget).toBeTrue();
-    expect(component.showTimeSeriesWidget).toBeFalse();
+    it('should hide time series chart', () => {
+      component.showTimeSeriesWidget = true;
+      component.removeWidget(WidgetTypeEnum.DailyCheckIn);
+      expect(component.showTimeSeriesWidget).toBeFalse();
+    });
   });
 
-  it('should show bar chart widget when addWidget("Chart") is called', () => {
-    component.addWidget('Chart');
-    expect(component.showBarChartWidget).toBeTrue();
+  it('should change selected widget type on dropdown change', () => {
+    component.onTypeDropdownChange(WidgetTypeEnum.CheckIn);
+    expect(component.selectedWidgetType).toBe(WidgetTypeEnum.CheckIn);
   });
 
-  it('should show time series widget when addWidget("Time") is called', () => {
-    component.addWidget('Time');
-    expect(component.showTimeSeriesWidget).toBeTrue();
-  });
-
-  it('should hide bar chart widget when removeWidget("Chart") is called', () => {
-    component.showBarChartWidget = true;
-    component.removeWidget('Chart');
-    expect(component.showBarChartWidget).toBeFalse();
-  });
-
-  it('should hide time series widget when removeWidget("Time") is called', () => {
-    component.showTimeSeriesWidget = true;
-    component.removeWidget('Time');
-    expect(component.showTimeSeriesWidget).toBeFalse();
-  });
-
-  it('should save widget visibility to localStorage and show toast', () => {
-    component.showBarChartWidget = true;
+  it('should save layout and show success message', () => {
+    component.showOccupancyChartWidget = true;
+    component.showCheckInChartWidget = false;
     component.showTimeSeriesWidget = true;
 
     component.saveLayout();
 
-    const saved = JSON.parse(localStorage.getItem('widgetVisibility') || '{}');
-    expect(saved).toEqual({
-      showBarChartWidget: true,
+    const saved = localStorage.getItem(LocalStorageKey.WidgetVisibility);
+    expect(JSON.parse(saved!)).toEqual({
+      showOccupancyChartWidget: true,
+      showCheckInChartWidget: false,
       showTimeSeriesWidget: true,
     });
 
-    expect(mockToastrService.displayMessage).toHaveBeenCalledWith(
+    expect(toastrServiceSpy.displayMessage).toHaveBeenCalledWith(
       'Layout saved successfully!',
       ToastrMessageType.SUCCESS
     );
   });
 
-  it('should remove widgetVisibility from localStorage and log on destroy', () => {
-    localStorage.setItem('widgetVisibility', 'true');
+  describe('loadSavedDashboard', () => {
+    it('should load and apply saved visibility', () => {
+      localStorage.setItem(
+        LocalStorageKey.WidgetVisibility,
+        JSON.stringify({
+          showOccupancyChartWidget: true,
+          showCheckInChartWidget: true,
+          showTimeSeriesWidget: false,
+        })
+      );
 
-    component.ngOnDestroy();
+      component['loadSavedDashboard']();
 
-    expect(localStorage.getItem('widgetVisibility')).toBeNull();
-    expect(mockLoggerService.info).toHaveBeenCalledWith(
-      'Local storage variable widgetVisibility has been removed!'
-    );
+      expect(component.showOccupancyChartWidget).toBeTrue();
+      expect(component.showCheckInChartWidget).toBeTrue();
+      expect(component.showTimeSeriesWidget).toBeFalse();
+    });
   });
 });

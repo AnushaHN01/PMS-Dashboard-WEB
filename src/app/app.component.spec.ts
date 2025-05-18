@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { LoggerService } from './main/core/services/logger.service';
 import { ToastrService } from 'ngx-toastr';
+import { LocalStorageKey } from './main/core/models/enums';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -33,17 +34,19 @@ describe('AppComponent', () => {
 
   it('should set auth_token and isAdmin in localStorage and log message on init', () => {
     component.ngOnInit();
-    expect(localStorage.getItem('auth_token')).toBe('utkhsjh9080g');
-    expect(localStorage.getItem('isAdmin')).toBe('true');
+    expect(localStorage.getItem(LocalStorageKey.AuthToken)).toBe(
+      'utkhsjh9080g'
+    );
+    expect(localStorage.getItem(LocalStorageKey.IsAdmin)).toBe('true');
     expect(loggerServiceSpy.info).toHaveBeenCalledWith(
       'User Admin has logged in to MySite360 user interface'
     );
   });
 
   it('should remove isAdmin from localStorage and log message on destroy', () => {
-    localStorage.setItem('isAdmin', 'true');
+    localStorage.setItem(LocalStorageKey.IsAdmin, 'true');
     component.ngOnDestroy();
-    expect(localStorage.getItem('isAdmin')).toBeNull();
+    expect(localStorage.getItem(LocalStorageKey.IsAdmin)).toBeNull();
     expect(loggerServiceSpy.info).toHaveBeenCalledWith(
       'Local storage variable isAdmin has been removed!'
     );

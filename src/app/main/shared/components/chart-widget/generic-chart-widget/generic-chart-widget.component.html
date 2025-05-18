@@ -1,6 +1,6 @@
 <div class="chart-widget">
   <div class="widget-header">
-    <span class="widget-title">Time Series Chart</span>
+    <span class="widget-title">{{ widgetTitle }}</span>
     <button
       *ngIf="isRemoveBtnEnable"
       class="remove-btn"
@@ -10,9 +10,8 @@
     </button>
   </div>
 
-  <div>
+  <div *ngIf="chartData">
     <chart-widget
-      *ngIf="chartData"
       [chartData]="chartData"
       [chartType]="chartType"
       [chartOptions]="chartOptions"

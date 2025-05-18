@@ -1,19 +1,39 @@
 <div class="widget-controls">
-  <button (click)="addWidget('Chart')" class="btn">Add Bar Chart Widget</button>
-  <button (click)="addWidget('Time')" class="btn">
-    Add Time Series Widget
-  </button>
+  <p-dropdown
+    class="dropdown-controls"
+    [options]="widgetTypeOptions"
+    optionLabel="label"
+    optionValue="value"
+    [filter]="true"
+    (onChange)="onTypeDropdownChange($event.value)"
+    placeholder="Please Select"
+  ></p-dropdown>
+  <button (click)="addWidget()" class="btn">Add Widget</button>
   <button (click)="saveLayout()" class="btn-save">Save</button>
 </div>
-<div *ngIf="showBarChartWidget">
-  <bar-chart-widget
-    [isRemoveBtnEnable]="isRemoveBtnEnable"
-    (showChartWidget)="removeWidget('Chart')"
-  ></bar-chart-widget>
-</div>
-<div *ngIf="showTimeSeriesWidget" class="padding-top-20px">
-  <time-series-chart-widget
-    [isRemoveBtnEnable]="isRemoveBtnEnable"
-    (showTimeWidget)="removeWidget('Time')"
-  ></time-series-chart-widget>
+
+<div class="chart-widgets-container">
+  <generic-chart-widget
+    *ngIf="showOccupancyChartWidget"
+    widgetTitle="Top 5 Room Types by Occupancy"
+    [chartType]="ChartType.Bar"
+    [chartData]="occupancyData"
+    (remove)="removeWidget('Occupancy')"
+  ></generic-chart-widget>
+
+  <generic-chart-widget
+    *ngIf="showCheckInChartWidget"
+    widgetTitle="Check-in Count by Weekday"
+    [chartType]="ChartType.Bar"
+    [chartData]="checkInData"
+    (remove)="removeWidget('CheckIn')"
+  ></generic-chart-widget>
+
+  <generic-chart-widget
+    *ngIf="showTimeSeriesWidget"
+    widgetTitle="Daily Check-ins over 14 Days"
+    [chartType]="ChartType.Line"
+    [chartData]="dailyCheckInData"
+    (remove)="removeWidget('DailyCheckIn')"
+  ></generic-chart-widget>
 </div>

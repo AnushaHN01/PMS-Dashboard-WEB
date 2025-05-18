@@ -1,77 +1,136 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
+import { DropdownModule } from 'primeng/dropdown';
 
-import { BarChartWidgetComponent } from '../bar-chart-widget/bar-chart-widget.component';
-import { TimeSeriesChartWidgetComponent } from '../time-series-chart-widget/time-series-chart-widget.component';
+import { ChartType } from '../../../shared/models/enums';
+import { GenericChartWidgetComponent } from '../../../shared/components/chart-widget/generic-chart-widget/generic-chart-widget.component';
 import {
   ToastrMessageType,
   ToastrMessageWrapperService,
 } from '../../../shared/services/toastr-message-wrapper.service';
-import { LoggerService } from '../../../core/services/logger.service';
+import { WidgetType, WidgetTypeEnum } from '../../models/enums';
+import { LocalStorageKey } from '../../../core/models/enums';
+import { ChartDataService } from '../../services/chartdata.service';
 
 @Component({
   selector: 'admin-dashboard',
   standalone: true,
-  imports: [NgIf, BarChartWidgetComponent, TimeSeriesChartWidgetComponent],
+  imports: [NgIf, DropdownModule, GenericChartWidgetComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss'],
 })
-export class AdminDashboardComponent implements OnInit, OnDestroy {
-  showBarChartWidget = false;
+export class AdminDashboardComponent implements OnInit {
+  [x: string]: any;
+  showOccupancyChartWidget = false;
+  showCheckInChartWidget = false;
   showTimeSeriesWidget = false;
   isRemoveBtnEnable = false;
-  configuration: any;
+  ChartType = ChartType;
+  occupancyData: any;
+  checkInData: any;
+  dailyCheckInData: any;
+  selectedWidgetType = '';
+  widgetTypeOptions = Object.keys(WidgetType).map((key) => ({
+    label: WidgetType[key as keyof typeof WidgetType],
+    value: key as keyof typeof WidgetType,
+  }));
 
   constructor(
     private readonly toastr: ToastrMessageWrapperService,
-    private readonly loggerService: LoggerService
+    private readonly chartDataService: ChartDataService
   ) {
-    if (localStorage.getItem('isAdmin')) {
+    if (localStorage.getItem(LocalStorageKey.IsAdmin)) {
       this.isRemoveBtnEnable = true;
     }
   }
 
   ngOnInit(): void {
-    const saved = localStorage.getItem('widgetVisibility');
-    if (saved) {
-      const widgetVisibility = JSON.parse(saved);
-      this.showBarChartWidget = widgetVisibility.showBarChartWidget;
-      this.showTimeSeriesWidget = widgetVisibility.showTimeSeriesWidget;
+    this.loadSavedDashboard();
+  }
+
+  addWidget(): void {
+    if (this.selectedWidgetType === WidgetTypeEnum.Occupancy) {
+      this.loadOccupancyChartData();
+    } else if (this.selectedWidgetType === WidgetTypeEnum.CheckIn) {
+      this.loadCheckInChartData();
+    } else if (this.selectedWidgetType === WidgetTypeEnum.DailyCheckIn) {
+      this.loadDailyChartData();
     }
   }
 
-  addWidget(type: string): void {
-    if (type == 'Chart') {
-      this.showBarChartWidget = true;
-    } else if (type == 'Time') {
-      this.showTimeSeriesWidget = true;
-    }
-  }
-
-  removeWidget(type: string): void {
-    if (type == 'Chart') {
-      this.showBarChartWidget = false;
-    } else if (type == 'Time') {
+  removeWidget(val: string): void {
+    if (val === WidgetTypeEnum.Occupancy) {
+      this.showOccupancyChartWidget = false;
+    } else if (val === WidgetTypeEnum.CheckIn) {
+      this.showCheckInChartWidget = false;
+    } else if (val === WidgetTypeEnum.DailyCheckIn) {
       this.showTimeSeriesWidget = false;
     }
   }
 
+  onTypeDropdownChange(type: string): void {
+    this.selectedWidgetType = type;
+  }
+
   saveLayout(): void {
     const widgetVisibility = {
-      showBarChartWidget: this.showBarChartWidget,
+      showOccupancyChartWidget: this.showOccupancyChartWidget,
+      showCheckInChartWidget: this.showCheckInChartWidget,
       showTimeSeriesWidget: this.showTimeSeriesWidget,
     };
-    localStorage.setItem('widgetVisibility', JSON.stringify(widgetVisibility));
+
+    localStorage.setItem(
+      LocalStorageKey.WidgetVisibility,
+      JSON.stringify(widgetVisibility)
+    );
     this.toastr.displayMessage(
       'Layout saved successfully!',
       ToastrMessageType.SUCCESS
     );
   }
 
-  ngOnDestroy(): void {
-    localStorage.removeItem('widgetVisibility');
-    this.loggerService.info(
-      'Local storage variable widgetVisibility has been removed!'
+  private loadOccupancyChartData(): void {
+    this.showOccupancyChartWidget = true;
+    this.occupancyData = this.chartDataService.getOccupancyChartData();
+    this.toastr.displayMessage(
+      'Room Occupancy loaded successfully!',
+      ToastrMessageType.SUCCESS
     );
+  }
+
+  private loadCheckInChartData(): void {
+    this.showCheckInChartWidget = true;
+    this.checkInData = this.chartDataService.getCheckInChartData();
+    this.toastr.displayMessage(
+      'Check-in count loaded successfully!',
+      ToastrMessageType.SUCCESS
+    );
+  }
+
+  private loadDailyChartData(): void {
+    this.showTimeSeriesWidget = true;
+    this.dailyCheckInData = this.chartDataService.getTimeSeriesChartData();
+    this.toastr.displayMessage(
+      'Time series loaded successfully!',
+      ToastrMessageType.SUCCESS
+    );
+  }
+
+  private loadSavedDashboard(): void {
+    const widgetData = localStorage.getItem(LocalStorageKey.WidgetVisibility);
+    if (widgetData) {
+      const widgetVisibility = JSON.parse(widgetData);
+      if (widgetVisibility?.showOccupancyChartWidget) {
+        this.loadOccupancyChartData();
+      }
+
+      if (widgetVisibility?.showCheckInChartWidget) {
+        this.loadCheckInChartData();
+      }
+
+      if (widgetVisibility?.showTimeSeriesWidget) {
+        this.loadDailyChartData();
+      }
+    }
   }
 }

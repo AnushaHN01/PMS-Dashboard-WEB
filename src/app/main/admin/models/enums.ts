@@ -7,7 +7,14 @@ export enum AdminSection {
   Settings = 'Settings',
 }
 
-export enum RoomTypeKPI {
+export enum WidgetType {
+  Occupancy = 'Top 5 Room Types by Occupancy',
+  CheckIn = 'Check-in Count by Weekday',
+  DailyCheckIn = 'Daily Check-ins over the past 14 days',
+}
+
+export enum WidgetTypeEnum {
   Occupancy = 'Occupancy',
-  CheckIn = 'Check-in',
+  CheckIn = 'CheckIn',
+  DailyCheckIn = 'DailyCheckIn',
 }
