@@ -138,5 +138,10 @@ src/
 ![Removed Widget](screenshots/5.RemovedWidget.png)
 ![Dashboard Layout Save](screenshots/6.DashboardLayoutSave.png)
 
+```
+## Thought Process and Ideas for Ehancements
+
+![Thought Process Document](EngineeringChallenge_HotelApp_AnushaHN.pdf)
 
 ```
+
