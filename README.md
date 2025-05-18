@@ -41,41 +41,43 @@ This is a modular admin dashboard built using **Angular 19** with **standalone c
 ```
 src/
 └── app/
-├── main/
-│ ├── admin/
-│ │ ├── components/
-│ │ │ ├── admin-dashboard/
-│ │ │ ├── bar-chart-widget/
-│ │ │ └── time-series-chart-widget/
-│ │ ├── models/
-│ │ │ ├── dashboard.ts
-│ │ │ └── enums.ts
-│ │ └── services/
-│ │ ├── chartdata.service.ts
-│ │ └── dashboard.service.ts
-│ ├── core/
-│ │ ├── interceptors/
-│ │ │ ├── auth.interceptor.ts
-│ │ │ └── auth.interceptor.spec.ts
-│ │ └── services/
-│ │ ├── logger.service.ts
-│ │ └── logger.service.spec.ts
-│ └── shared/
-│ ├── components/
-│ │ └── chart-widget/
-│ │ ├── chart-widget.component.html
-│ │ └── chart-widget.component.ts
-│ ├── models/
-│ │ └── enums.ts
-│ ├── pipes/
-│ └── services/
-│ ├── toastr-message-wrapper.service.ts
-│ └── toastr-message-wrapper.service.spec.ts
+    ├── main/
+    │   ├── admin/
+    │   │   ├── components/
+    │   │   │   ├── admin-dashboard/             # Admin dashboard component
+    │   │   │   ├── bar-chart-widget/            # Bar chart widget component
+    │   │   │   └── time-series-chart-widget/    # Time series chart widget component
+    │   │   ├── models/                          
+    │   │   │   ├── dashboard.ts                 # Interfaces and types related to dashboard
+    │   │   │   └── enums.ts                     # Enum definitions for admin section
+    │   │   └── services/
+    │   │       ├── chartdata.service.ts         # Service for fetching chart data
+    │   │       └── dashboard.service.ts         # Business logic for dashboard
+    │   └── core/
+    │       ├── interceptors/
+    │       │   ├── auth.interceptor.ts          # Auth token interceptor
+    │       │   └── auth.interceptor.spec.ts     # Unit tests for auth interceptor
+    │       └── services/
+    │           ├── logger.service.ts            # Logging service
+    │           └── logger.service.spec.ts       # Unit tests for logger service
+    ├── layout/                                  # Layout components like header/side panel/footer
+    └── shared/
+        ├── components/
+        │   └── chart-widget/                    # Shared chart widget component
+        │       ├── chart-widget.component.html
+        │       └── chart-widget.component.ts
+        ├── models/
+        │   └── enums.ts                         # Shared enums used across app
+        ├── pipes/                               # (Expected) shared pipes
+        └── services/
+            ├── toastr-message-wrapper.service.ts     # Toastr notification service
+            └── toastr-message-wrapper.service.spec.ts
 ├── app.component.ts
-├── app.component.spec.ts
 ├── app.component.html
-├── app.routes.ts
-└── app.config.ts
+├── app.component.spec.ts
+├── app.config.ts                                # Application-wide config
+└── index.html                                   # App entry point
+
 ```
 
 ---
@@ -111,8 +113,8 @@ To execute unit tests with the [Karma](https://karma-runner.github.io) test runn
 ng test
 ```
 
-![Unit Test Cases](screenshots/6.PMS-TestCases.PNG)
-![Coverage Report](screenshots/7.UTCCoverage.PNG)
+![Unit Test Cases](screenshots/7.PMS-TestCases.PNG)
+![Coverage Report](screenshots/8.UTCCoverage.PNG)
 
 ---
 
@@ -123,5 +125,7 @@ ng test
 ![Check-in Count by Weekday](screenshots/3.CheckInChart.png)
 ![Daily Check-in over the past 14days](screenshots/4.TimeSerieChart.png)
 ![Removed Widget](screenshots/5.RemovedWidget.png)
+![Dashboard Layout Save](screenshots/6.DashboardLayoutSave.png)
+
 
 ```
