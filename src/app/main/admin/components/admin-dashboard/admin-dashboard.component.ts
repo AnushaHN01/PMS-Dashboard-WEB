@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
 
@@ -7,10 +7,12 @@ import {
   ToastrMessageType,
   ToastrMessageWrapperService,
 } from '../../../shared/services/toastr-message-wrapper.service';
-import { WidgetType, WidgetTypeEnum } from '../../models/enums';
+import { WidgetType } from '../../models/enums';
 import { LocalStorageKey } from '../../../core/models/enums';
 import { ChartDataService } from '../../services/chartdata.service';
 import { GenericChartWidgetComponent } from '../../../shared/components/generic-chart-widget/generic-chart-widget.component';
+import { DropdownModel } from '../../../layout/models/dropdown.model';
+import { CanComponentDeactivate } from '../../../shared/guard/guards/unsaved-changes.guard';
 
 @Component({
   selector: 'admin-dashboard',
@@ -18,9 +20,9 @@ import { GenericChartWidgetComponent } from '../../../shared/components/generic-
   imports: [NgIf, DropdownModule, GenericChartWidgetComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminDashboardComponent implements OnInit {
-  [x: string]: any;
   showOccupancyChartWidget = false;
   showCheckInChartWidget = false;
   showTimeSeriesWidget = false;
@@ -30,10 +32,8 @@ export class AdminDashboardComponent implements OnInit {
   checkInData: any;
   dailyCheckInData: any;
   selectedWidgetType = '';
-  widgetTypeOptions = Object.keys(WidgetType).map((key) => ({
-    label: WidgetType[key as keyof typeof WidgetType],
-    value: key as keyof typeof WidgetType,
-  }));
+  WidgetType: typeof WidgetType = WidgetType;
+  widgetTypeOptions: DropdownModel[] = [];
 
   constructor(
     private readonly toastr: ToastrMessageWrapperService,
@@ -45,30 +45,32 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.widgetTypeOptions = this.chartDataService.getWidgetTypeList();
     this.loadSavedDashboard();
   }
 
   addWidget(): void {
-    if (this.selectedWidgetType === WidgetTypeEnum.Occupancy) {
+    if (this.selectedWidgetType === WidgetType.Occupancy) {
       this.loadOccupancyChartData();
-    } else if (this.selectedWidgetType === WidgetTypeEnum.CheckIn) {
+    } else if (this.selectedWidgetType === WidgetType.CheckIn) {
       this.loadCheckInChartData();
-    } else if (this.selectedWidgetType === WidgetTypeEnum.DailyCheckIn) {
+    } else if (this.selectedWidgetType === WidgetType.DailyCheckIn) {
       this.loadDailyChartData();
     }
   }
 
-  removeWidget(val: string): void {
-    if (val === WidgetTypeEnum.Occupancy) {
+  removeWidget(val: WidgetType): void {
+    if (val === WidgetType.Occupancy) {
       this.showOccupancyChartWidget = false;
-    } else if (val === WidgetTypeEnum.CheckIn) {
+    } else if (val === WidgetType.CheckIn) {
       this.showCheckInChartWidget = false;
-    } else if (val === WidgetTypeEnum.DailyCheckIn) {
+    } else if (val === WidgetType.DailyCheckIn) {
       this.showTimeSeriesWidget = false;
     }
   }
 
   onTypeDropdownChange(type: string): void {
+    console.log(type);
     this.selectedWidgetType = type;
   }
 

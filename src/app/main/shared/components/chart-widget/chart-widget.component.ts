@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChartModule } from 'primeng/chart';
 import { ChartType } from '../../models/enums';
@@ -15,6 +15,7 @@ import { ChartType } from '../../models/enums';
       [options]="chartOptions"
     ></p-chart>
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChartWidgetComponent {
   @Input() chartData: any;

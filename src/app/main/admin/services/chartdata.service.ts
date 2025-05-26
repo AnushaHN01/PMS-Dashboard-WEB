@@ -1,10 +1,19 @@
 import { Injectable } from '@angular/core';
 import { addDays, formatISO } from 'date-fns';
+import { DropdownModel } from '../../layout/models/dropdown.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChartDataService {
+  getWidgetTypeList(): DropdownModel[] {
+    return [
+      { value: 'Occupancy', title: 'Top 5 Room Types by Occupancy' },
+      { value: 'CheckIn', title: 'Check-in Count by Weekday' },
+      { value: 'DailyCheckIn', title: 'Daily Check-ins over the past 14 days' },
+    ];
+  }
+
   getOccupancyChartData(): any {
     return {
       labels: ['Deluxe', 'Standard', 'Suite', 'Family', 'Economy'],

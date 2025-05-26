@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  input,
+  Input,
+  Output,
+  signal,
+} from '@angular/core';
 import { NgIf } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
 import { ChartWidgetComponent } from '../chart-widget/chart-widget.component';
@@ -15,39 +23,38 @@ import { LocalStorageKey } from '../../../core/models/enums';
   imports: [NgIf, DropdownModule, ChartWidgetComponent],
   templateUrl: './generic-chart-widget.component.html',
   styleUrls: ['./generic-chart-widget.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GenericChartWidgetComponent {
-  @Input() chartType: ChartType = ChartType.Bar;
+  chartType = input<ChartType>(ChartType.Bar);
   @Input() widgetTitle = 'Chart';
   @Input() chartData: any;
-  isRemoveBtnEnable = false;
+  isRemoveBtnEnable = signal<boolean>(false);
 
   @Output() remove = new EventEmitter<void>();
 
-  get chartOptions(): any {
-    return {
-      responsive: true,
-      plugins: {
-        legend: { position: 'top' },
-        title: { display: true, text: this.widgetTitle },
+  chartOptions = signal<any>({
+    responsive: true,
+    plugins: {
+      legend: { position: 'top' },
+      title: { display: true, text: this.widgetTitle },
+    },
+    scales: {
+      x: {
+        type: this.chartType() === ChartType.Line ? 'time' : 'category',
+        title: { display: true, text: 'Category' },
       },
-      scales: {
-        x: {
-          type: this.chartType === ChartType.Line ? 'time' : 'category',
-          title: { display: true, text: 'Category' },
-        },
-        y: {
-          beginAtZero: true,
-          title: { display: true, text: 'Count' },
-        },
+      y: {
+        beginAtZero: true,
+        title: { display: true, text: 'Count' },
       },
-    };
-  }
+    },
+  });
 
   constructor(private toastr: ToastrMessageWrapperService) {
-    if (localStorage.getItem(LocalStorageKey.IsAdmin)) {
-      this.isRemoveBtnEnable = true;
-    }
+    this.isRemoveBtnEnable.set(
+      localStorage.getItem(LocalStorageKey.IsAdmin) === 'true'
+    );
   }
 
   removeWidget(): void {

@@ -2,7 +2,7 @@
   <p-dropdown
     class="dropdown-controls"
     [options]="widgetTypeOptions"
-    optionLabel="label"
+    optionLabel="title"
     optionValue="value"
     [filter]="true"
     (onChange)="onTypeDropdownChange($event.value)"
@@ -12,21 +12,23 @@
   <button (click)="saveLayout()" class="btn-save">Save</button>
 </div>
 
-<div class="chart-widgets-container">
-  <generic-chart-widget
-    *ngIf="showOccupancyChartWidget"
-    widgetTitle="Top 5 Room Types by Occupancy"
-    [chartType]="ChartType.Bar"
-    [chartData]="occupancyData"
-    (remove)="removeWidget('Occupancy')"
-  ></generic-chart-widget>
+@for (item of items; track $index) {
+<generic-chart-widget
+  *ngIf="showOccupancyChartWidget"
+  widgetTitle="Top 5 Room Types by Occupancy"
+  [chartType]="ChartType.Bar"
+  [chartData]="occupancyData"
+  (remove)="removeWidget(WidgetType.Occupancy)"
+></generic-chart-widget>
+}
 
+<div class="chart-widgets-container">
   <generic-chart-widget
     *ngIf="showCheckInChartWidget"
     widgetTitle="Check-in Count by Weekday"
     [chartType]="ChartType.Bar"
     [chartData]="checkInData"
-    (remove)="removeWidget('CheckIn')"
+    (remove)="removeWidget(WidgetType.CheckIn)"
   ></generic-chart-widget>
 
   <generic-chart-widget
@@ -34,6 +36,6 @@
     widgetTitle="Daily Check-ins over 14 Days"
     [chartType]="ChartType.Line"
     [chartData]="dailyCheckInData"
-    (remove)="removeWidget('DailyCheckIn')"
+    (remove)="removeWidget(WidgetType.DailyCheckIn)"
   ></generic-chart-widget>
 </div>

@@ -13,7 +13,7 @@
   <div *ngIf="chartData">
     <chart-widget
       [chartData]="chartData"
-      [chartType]="chartType"
+      [chartType]="chartType()"
       [chartOptions]="chartOptions"
     ></chart-widget>
   </div>

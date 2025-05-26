@@ -1,8 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 
 import { LoggerService } from './main/core/services/logger.service';
 import { RouterModule } from '@angular/router';
-import { LayoutComponent } from './main/layout/layout/layout.component';
+import { LayoutComponent } from './main/layout/components/layout/layout.component';
 import { LocalStorageKey } from './main/core/models/enums';
 
 @Component({
@@ -10,6 +15,7 @@ import { LocalStorageKey } from './main/core/models/enums';
   standalone: true,
   imports: [RouterModule, LayoutComponent],
   templateUrl: './app.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit, OnDestroy {
   Admin = 'Admin';
@@ -20,12 +26,15 @@ export class AppComponent implements OnInit, OnDestroy {
     localStorage.setItem(LocalStorageKey.AuthToken, 'utkhsjh9080g');
     localStorage.setItem(LocalStorageKey.IsAdmin, 'true');
     this.loggerService.info(
-      `User ${this.Admin} has logged in to MySite360 user interface`
+      `User ${this.Admin} has logged in to user interface`
     );
   }
 
   ngOnDestroy(): void {
     localStorage.removeItem(LocalStorageKey.IsAdmin);
-    this.loggerService.info('Local storage variable isAdmin has been removed!');
+    localStorage.removeItem(LocalStorageKey.AuthToken);
+    localStorage.removeItem(LocalStorageKey.WidgetVisibility);
+    localStorage.clear();
+    this.loggerService.info('Storage cleared on unload');
   }
 }

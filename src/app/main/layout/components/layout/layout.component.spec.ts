@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { LayoutComponent } from './layout.component';
-import { DashboardService } from '../../admin/services/dashboard.service';
+import { DashboardService } from '../../../admin/services/dashboard.service';
 import { of } from 'rxjs';
 
 import { ToastrModule } from 'ngx-toastr';
@@ -39,8 +39,8 @@ describe('LayoutComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize adminSections from AdminSection enum', () => {
-    expect(component.adminSections.length).toBeGreaterThan(0);
+  it('should initialize navLinks from AdminSection enum', () => {
+    expect(component.navLinks.length).toBeGreaterThan(0);
   });
 
   it('should populate metrics on ngOnInit', () => {

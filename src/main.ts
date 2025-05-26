@@ -1,11 +1,9 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { AppComponent } from './app/app.component';
 import { registerables } from 'chart.js';
 import Chart from 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
 import { importProvidersFrom } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { AuthInterceptor } from './app/main/core/interceptors/auth.interceptor';
 import {
   provideHttpClient,
   withInterceptorsFromDi,
@@ -15,24 +13,26 @@ import { provideToastr, ToastrModule } from 'ngx-toastr';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { provideRouter, Routes } from '@angular/router';
 
-Chart.register(...registerables);
+import { AppComponent } from './app/app.component';
+import { AuthInterceptor } from './app/main/core/interceptors/auth.interceptor';
+import { routes } from './app/app.routes';
+import { UnsavedChangesGuard } from './app/main/shared/guard/guards/unsaved-changes.guard';
 
-const routes: Routes = [];
+Chart.register(...registerables);
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideAnimations(),
     provideToastr(),
     provideRouter(routes),
+    UnsavedChangesGuard,
     importProvidersFrom(ToastrModule.forRoot()),
     provideHttpClient(withInterceptorsFromDi()),
-
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true,
     },
-
     importProvidersFrom(
       LoggerModule.forRoot({
         level: NgxLoggerLevel.DEBUG,

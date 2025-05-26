@@ -1,4 +1,4 @@
-export interface DashboardModel {
+export interface DropdownModel {
   title: string;
   value: string | number;
 }

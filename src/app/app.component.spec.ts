@@ -39,7 +39,7 @@ describe('AppComponent', () => {
     );
     expect(localStorage.getItem(LocalStorageKey.IsAdmin)).toBe('true');
     expect(loggerServiceSpy.info).toHaveBeenCalledWith(
-      'User Admin has logged in to MySite360 user interface'
+      'User Admin has logged in to user interface'
     );
   });
 
