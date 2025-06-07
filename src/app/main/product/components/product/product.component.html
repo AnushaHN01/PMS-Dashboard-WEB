@@ -1,0 +1,31 @@
+<div class="product-form">
+  <form [formGroup]="productForm" (ngSubmit)="addOrUpdateProduct()">
+    <input formControlName="name" placeholder="Product Name" required />
+    <input formControlName="price" type="number" placeholder="Price" required />
+    <button type="submit">
+      {{ editingProductId !== null ? "Update" : "Add" }}
+    </button>
+  </form>
+</div>
+
+<div class="product-grid">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of products$ | async; trackBy: trackById">
+        <td>{{ product.name }}</td>
+        <td>{{ product.price }}</td>
+        <td>
+          <button (click)="editProduct(product)">Edit</button>
+          <button (click)="deleteProduct(product.id!)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

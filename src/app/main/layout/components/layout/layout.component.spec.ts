@@ -19,9 +19,8 @@ describe('LayoutComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         LayoutComponent,
-        ToastrModule.forRoot(), // <-- Add this
+        ToastrModule.forRoot(),
         LoggerModule.forRoot({
-          // <-- And this
           level: NgxLoggerLevel.DEBUG,
           serverLogLevel: NgxLoggerLevel.ERROR,
         }),
@@ -41,10 +40,5 @@ describe('LayoutComponent', () => {
 
   it('should initialize navLinks from AdminSection enum', () => {
     expect(component.navLinks.length).toBeGreaterThan(0);
-  });
-
-  it('should populate metrics on ngOnInit', () => {
-    component.ngOnInit();
-    expect(component.metrics).toEqual([]);
   });
 });

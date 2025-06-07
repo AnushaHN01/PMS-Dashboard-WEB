@@ -1,0 +1,58 @@
+.form-container {
+  max-width: 400px;
+  margin: auto;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+
+  label {
+    display: block;
+    margin-bottom: 1rem;
+
+    input {
+      display: block;
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  }
+
+  button {
+    padding: 0.5rem 1rem;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:disabled {
+      background: #ccc;
+    }
+  }
+}
+
+.form-container {
+  margin-bottom: 20px;
+  label {
+    display: block;
+    margin-bottom: 10px;
+  }
+}
+
+.employee-grid {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+    }
+
+    th {
+      background: #f0f0f0;
+    }
+  }
+}

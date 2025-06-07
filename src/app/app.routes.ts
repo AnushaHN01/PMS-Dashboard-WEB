@@ -15,4 +15,25 @@ export const routes: Routes = [
         './main/bookings/components/bookings-dashboard/bookings-dashboard.component'
       ).then((m) => m.BookingsDashboardComponent),
   },
+  {
+    path: 'product',
+    loadComponent: () =>
+      import('./main/product/components/product/product.component').then(
+        (m) => m.ProductComponent
+      ),
+  },
+  {
+    path: 'employee',
+    loadComponent: () =>
+      import(
+        './main/usermanagement/components/employee/employee.component'
+      ).then((m) => m.EmployeeComponent),
+  },
+  {
+    path: 'user',
+    loadComponent: () =>
+      import('./main/user/components/user/user.component').then(
+        (m) => m.UserComponent
+      ),
+  },
 ];

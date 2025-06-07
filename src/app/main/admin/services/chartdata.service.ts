@@ -1,21 +1,22 @@
 import { Injectable } from '@angular/core';
 import { addDays, formatISO } from 'date-fns';
 import { DropdownModel } from '../../layout/models/dropdown.model';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChartDataService {
-  getWidgetTypeList(): DropdownModel[] {
-    return [
+  getWidgetTypeList(): Observable<DropdownModel[]> {
+    return of([
       { value: 'Occupancy', title: 'Top 5 Room Types by Occupancy' },
       { value: 'CheckIn', title: 'Check-in Count by Weekday' },
       { value: 'DailyCheckIn', title: 'Daily Check-ins over the past 14 days' },
-    ];
+    ]);
   }
 
-  getOccupancyChartData(): any {
-    return {
+  getOccupancyChartData(): Observable<any> {
+    return of({
       labels: ['Deluxe', 'Standard', 'Suite', 'Family', 'Economy'],
       datasets: [
         {
@@ -24,11 +25,11 @@ export class ChartDataService {
           data: [120, 95, 60, 30, 25],
         },
       ],
-    };
+    });
   }
 
-  getCheckInChartData(): any {
-    return {
+  getCheckInChartData(): Observable<any> {
+    return of({
       labels: [
         'Sunday',
         'Monday',
@@ -45,10 +46,10 @@ export class ChartDataService {
           data: [45, 60, 70, 80, 95, 110, 85],
         },
       ],
-    };
+    });
   }
 
-  getTimeSeriesChartData(): any {
+  getTimeSeriesChartData(): Observable<any> {
     const startDate = new Date(2025, 4, 1); // May 1, 2025
     const counts = [20, 25, 28, 30, 35, 40, 42, 45, 48, 50, 52, 53, 54, 55];
 
@@ -57,7 +58,7 @@ export class ChartDataService {
       y: count,
     }));
 
-    return {
+    return of({
       datasets: [
         {
           label: 'Check-ins',
@@ -68,6 +69,6 @@ export class ChartDataService {
           tension: 0.3,
         },
       ],
-    };
+    });
   }
 }

@@ -1,43 +1,46 @@
-import { Title } from 'chart.js';
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   inject,
   OnInit,
-  signal,
 } from '@angular/core';
+import { Store } from '@ngxs/store';
+import { AsyncPipe } from '@angular/common';
 
-import { DashboardService } from '../../../admin/services/dashboard.service';
 import { NavigationService } from '../../services/navigation.service';
 import { NavLink } from '../../models/navigation.model';
-import { NgFor, NgIf } from '@angular/common';
 import { HighlightDirective } from '../../../shared/directives/highlight.directive';
-import { DropdownModel } from '../../models/dropdown.model';
+import { LayoutState } from '../../../admin/state/dashboard/dashboard.state';
+import { LoadMetrics } from '../../../admin/state/dashboard/dashboard.actions';
 
 @Component({
   selector: 'layout',
   standalone: true,
-  imports: [HighlightDirective],
+  imports: [HighlightDirective, AsyncPipe],
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LayoutComponent implements OnInit {
-  metrics = signal<DropdownModel[]>([]); // Use of signal
+  //metrics = signal<DropdownModel[]>([]); // Use of signal
   navLinks: NavLink[] = [];
   navService = inject(NavigationService);
+  private store = inject(Store);
+  metrics$ = this.store.select(LayoutState.getMetrics);
 
-  constructor(private dashboardService: DashboardService) {}
+  constructor() {}
 
   ngOnInit(): void {
-    this.dashboardService.getMetrics().subscribe((data) => {
-      this.metrics.set(data); //To set signal value
-      // this.metrics.update((current) => [
-      //   ...current,
-      //   { title: `Today's Check-outs`, value: '5' }, //To update signal value
-      // ]);
-    });
+    this.store.dispatch(new LoadMetrics());
+
+    // this.dashboardService.getMetrics().subscribe((data) => {
+    //   this.metrics.set(data); //To set signal value
+    //   // this.metrics.update((current) => [
+    //   //   ...current,
+    //   //   { title: `Today's Check-outs`, value: '5' }, //To update signal value
+    //   // ]);
+    // });
+
     this.navLinks = this.navService.getNavLinks();
 
     //Computed will automatically recalculate for any update and reload the

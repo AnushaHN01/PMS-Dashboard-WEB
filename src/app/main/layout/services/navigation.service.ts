@@ -9,9 +9,9 @@ export class NavigationService {
     return [
       { title: 'Dashboard', href: './admin' },
       { title: 'Bookings', href: './bookings' },
-      { title: 'Rooms', href: './rooms' },
-      { title: 'Guests', href: './guests' },
-      { title: 'Settings', href: './settings' },
+      { title: 'Product - NGXS', href: './product' },
+      { title: 'Employee - NGRX', href: './employee' },
+      { title: 'User - Signal Store', href: './user' },
     ];
   }
 }

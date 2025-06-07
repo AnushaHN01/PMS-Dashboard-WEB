@@ -1,41 +1,25 @@
 <div class="widget-controls">
   <p-dropdown
     class="dropdown-controls"
-    [options]="widgetTypeOptions"
+    [options]="(widgetTypes$ | async) ?? []"
     optionLabel="title"
     optionValue="value"
+    [(ngModel)]="selectedWidgetType"
     [filter]="true"
-    (onChange)="onTypeDropdownChange($event.value)"
     placeholder="Please Select"
   ></p-dropdown>
   <button (click)="addWidget()" class="btn">Add Widget</button>
   <button (click)="saveLayout()" class="btn-save">Save</button>
 </div>
 
-@for (item of items; track $index) {
-<generic-chart-widget
-  *ngIf="showOccupancyChartWidget"
-  widgetTitle="Top 5 Room Types by Occupancy"
-  [chartType]="ChartType.Bar"
-  [chartData]="occupancyData"
-  (remove)="removeWidget(WidgetType.Occupancy)"
-></generic-chart-widget>
-}
-
 <div class="chart-widgets-container">
-  <generic-chart-widget
-    *ngIf="showCheckInChartWidget"
-    widgetTitle="Check-in Count by Weekday"
-    [chartType]="ChartType.Bar"
-    [chartData]="checkInData"
-    (remove)="removeWidget(WidgetType.CheckIn)"
-  ></generic-chart-widget>
-
-  <generic-chart-widget
-    *ngIf="showTimeSeriesWidget"
-    widgetTitle="Daily Check-ins over 14 Days"
-    [chartType]="ChartType.Line"
-    [chartData]="dailyCheckInData"
-    (remove)="removeWidget(WidgetType.DailyCheckIn)"
-  ></generic-chart-widget>
+  <ng-container *ngFor="let type of WidgetType | keyvalue">
+    <generic-chart-widget
+      *ngIf="widgetVisibility[type.value]"
+      [widgetTitle]="getWidgetTitle(type.value)"
+      [chartType]="getChartType(type.value)"
+      [chartData]="getChartData(type.value) | async"
+      (remove)="removeWidget(type.value)"
+    ></generic-chart-widget>
+  </ng-container>
 </div>

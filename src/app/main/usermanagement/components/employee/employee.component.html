@@ -1,0 +1,48 @@
+<div class="form-container">
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+    <label>
+      Name:
+      <input type="text" formControlName="name" />
+    </label>
+
+    <label>
+      Email:
+      <input type="email" formControlName="email" />
+    </label>
+
+    <label>
+      Department:
+      <input type="text" formControlName="department" />
+    </label>
+
+    <button type="submit" [disabled]="employeeForm.invalid">
+      {{ editingEmployeeId ? "Update" : "Submit" }}
+    </button>
+  </form>
+</div>
+
+<hr />
+
+<div class="employee-grid">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Department</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let emp of employees$ | async; trackBy: trackById">
+        <td>{{ emp.name }}</td>
+        <td>{{ emp.email }}</td>
+        <td>{{ emp.department }}</td>
+        <td>
+          <button (click)="editEmployee(emp)">Edit</button>
+          <button (click)="deleteEmployee(emp.id ?? 0)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

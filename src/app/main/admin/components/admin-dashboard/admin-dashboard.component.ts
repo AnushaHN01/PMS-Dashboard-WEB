@@ -1,6 +1,14 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { NgIf } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
+import { Store } from '@ngxs/store';
+import { Observable } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 import { ChartType } from '../../../shared/models/enums';
 import {
@@ -9,81 +17,71 @@ import {
 } from '../../../shared/services/toastr-message-wrapper.service';
 import { WidgetType } from '../../models/enums';
 import { LocalStorageKey } from '../../../core/models/enums';
-import { ChartDataService } from '../../services/chartdata.service';
 import { GenericChartWidgetComponent } from '../../../shared/components/generic-chart-widget/generic-chart-widget.component';
 import { DropdownModel } from '../../../layout/models/dropdown.model';
-import { CanComponentDeactivate } from '../../../shared/guard/guards/unsaved-changes.guard';
+import { ChartDataState } from '../../state/chartdata/chartdata.state';
+import {
+  LoadCheckInChart,
+  LoadOccupancyChart,
+  LoadTimeSeriesChart,
+  LoadWidgetType,
+} from '../../state/chartdata/chartdata.actions';
 
 @Component({
   selector: 'admin-dashboard',
   standalone: true,
-  imports: [NgIf, DropdownModule, GenericChartWidgetComponent],
+  imports: [
+    FormsModule,
+    CommonModule,
+    DropdownModule,
+    GenericChartWidgetComponent,
+  ],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminDashboardComponent implements OnInit {
-  showOccupancyChartWidget = false;
-  showCheckInChartWidget = false;
-  showTimeSeriesWidget = false;
-  isRemoveBtnEnable = false;
-  ChartType = ChartType;
-  occupancyData: any;
-  checkInData: any;
-  dailyCheckInData: any;
-  selectedWidgetType = '';
-  WidgetType: typeof WidgetType = WidgetType;
-  widgetTypeOptions: DropdownModel[] = [];
+  private store = inject(Store);
+  private toastr = inject(ToastrMessageWrapperService);
 
-  constructor(
-    private readonly toastr: ToastrMessageWrapperService,
-    private readonly chartDataService: ChartDataService
-  ) {
-    if (localStorage.getItem(LocalStorageKey.IsAdmin)) {
-      this.isRemoveBtnEnable = true;
-    }
-  }
+  ChartType = ChartType;
+  WidgetType = WidgetType;
+  selectedWidgetType!: WidgetType;
+
+  widgetTypes$ = this.store.select(ChartDataState.widgetType);
+  occupancyData$ = this.store.select(ChartDataState.occupancyChart);
+  checkInData$ = this.store.select(ChartDataState.checkInChart);
+  dailyCheckInData$ = this.store.select(ChartDataState.timeSeriesChart);
+
+  widgetVisibility: Record<WidgetType, boolean> = {
+    [WidgetType.Occupancy]: false,
+    [WidgetType.CheckIn]: false,
+    [WidgetType.DailyCheckIn]: false,
+  };
+
+  isRemoveBtnEnable = !!localStorage.getItem(LocalStorageKey.IsAdmin);
 
   ngOnInit(): void {
-    this.widgetTypeOptions = this.chartDataService.getWidgetTypeList();
+    this.store.dispatch(new LoadWidgetType());
     this.loadSavedDashboard();
   }
 
   addWidget(): void {
-    if (this.selectedWidgetType === WidgetType.Occupancy) {
-      this.loadOccupancyChartData();
-    } else if (this.selectedWidgetType === WidgetType.CheckIn) {
-      this.loadCheckInChartData();
-    } else if (this.selectedWidgetType === WidgetType.DailyCheckIn) {
-      this.loadDailyChartData();
-    }
+    this.toggleWidgetVisibility(this.selectedWidgetType, true);
   }
 
-  removeWidget(val: WidgetType): void {
-    if (val === WidgetType.Occupancy) {
-      this.showOccupancyChartWidget = false;
-    } else if (val === WidgetType.CheckIn) {
-      this.showCheckInChartWidget = false;
-    } else if (val === WidgetType.DailyCheckIn) {
-      this.showTimeSeriesWidget = false;
-    }
+  removeWidget(type: WidgetType): void {
+    this.toggleWidgetVisibility(type, false);
   }
 
-  onTypeDropdownChange(type: string): void {
-    console.log(type);
+  onTypeDropdownChange(type: WidgetType): void {
     this.selectedWidgetType = type;
   }
 
   saveLayout(): void {
-    const widgetVisibility = {
-      showOccupancyChartWidget: this.showOccupancyChartWidget,
-      showCheckInChartWidget: this.showCheckInChartWidget,
-      showTimeSeriesWidget: this.showTimeSeriesWidget,
-    };
-
     localStorage.setItem(
       LocalStorageKey.WidgetVisibility,
-      JSON.stringify(widgetVisibility)
+      JSON.stringify(this.widgetVisibility)
     );
     this.toastr.displayMessage(
       'Layout saved successfully!',
@@ -91,48 +89,63 @@ export class AdminDashboardComponent implements OnInit {
     );
   }
 
-  private loadOccupancyChartData(): void {
-    this.showOccupancyChartWidget = true;
-    this.occupancyData = this.chartDataService.getOccupancyChartData();
-    this.toastr.displayMessage(
-      'Room Occupancy loaded successfully!',
-      ToastrMessageType.SUCCESS
-    );
+  private loadChartData(action: any, message: string, type: WidgetType): void {
+    this.widgetVisibility[type] = true;
+    this.store.dispatch(new action());
+    this.toastr.displayMessage(message, ToastrMessageType.SUCCESS);
   }
 
-  private loadCheckInChartData(): void {
-    this.showCheckInChartWidget = true;
-    this.checkInData = this.chartDataService.getCheckInChartData();
-    this.toastr.displayMessage(
-      'Check-in count loaded successfully!',
-      ToastrMessageType.SUCCESS
-    );
-  }
-
-  private loadDailyChartData(): void {
-    this.showTimeSeriesWidget = true;
-    this.dailyCheckInData = this.chartDataService.getTimeSeriesChartData();
-    this.toastr.displayMessage(
-      'Time series loaded successfully!',
-      ToastrMessageType.SUCCESS
-    );
+  private toggleWidgetVisibility(type: WidgetType, isVisible: boolean): void {
+    this.widgetVisibility[type] = isVisible;
+    if (isVisible) {
+      const actions: Record<WidgetType, any> = {
+        [WidgetType.Occupancy]: LoadOccupancyChart,
+        [WidgetType.CheckIn]: LoadCheckInChart,
+        [WidgetType.DailyCheckIn]: LoadTimeSeriesChart,
+      };
+      this.loadChartData(
+        actions[type],
+        `${this.getWidgetTitle(type)} Loaded Successfully!`,
+        type
+      );
+    }
   }
 
   private loadSavedDashboard(): void {
-    const widgetData = localStorage.getItem(LocalStorageKey.WidgetVisibility);
-    if (widgetData) {
-      const widgetVisibility = JSON.parse(widgetData);
-      if (widgetVisibility?.showOccupancyChartWidget) {
-        this.loadOccupancyChartData();
-      }
-
-      if (widgetVisibility?.showCheckInChartWidget) {
-        this.loadCheckInChartData();
-      }
-
-      if (widgetVisibility?.showTimeSeriesWidget) {
-        this.loadDailyChartData();
-      }
+    const storedVisibility = localStorage.getItem(
+      LocalStorageKey.WidgetVisibility
+    );
+    if (storedVisibility) {
+      this.widgetVisibility = JSON.parse(storedVisibility);
+      Object.entries(this.widgetVisibility).forEach(([key, visible]) => {
+        if (visible) {
+          this.toggleWidgetVisibility(key as WidgetType, true);
+        }
+      });
     }
+  }
+
+  getChartData(type: WidgetType): Observable<any> {
+    return {
+      [WidgetType.Occupancy]: this.occupancyData$,
+      [WidgetType.CheckIn]: this.checkInData$,
+      [WidgetType.DailyCheckIn]: this.dailyCheckInData$,
+    }[type]!;
+  }
+
+  getChartType(type: WidgetType): ChartType {
+    return {
+      [WidgetType.Occupancy]: ChartType.Bar,
+      [WidgetType.CheckIn]: ChartType.Bar,
+      [WidgetType.DailyCheckIn]: ChartType.Line,
+    }[type]!;
+  }
+
+  getWidgetTitle(type: WidgetType): string {
+    return {
+      [WidgetType.Occupancy]: 'Top 5 Room Types by Occupancy',
+      [WidgetType.CheckIn]: 'Check-in Count by Weekday',
+      [WidgetType.DailyCheckIn]: 'Daily Check-ins over 14 Days',
+    }[type]!;
   }
 }
